@@ -1,5 +1,6 @@
 var fs = require("fs"),
 csv = require('csv'),
+outputcsv = fs.createWriteStream("output.csv"),
 _ = require("underscore"),
 genreFrequency = {};
 csv()
@@ -17,10 +18,11 @@ csv()
   }
 })
 .on('end', function(count){
-	console.log(_.map(genreFrequency, function(value, key){
-		return {"name": key, "size": value};
-	}));
-  //console.log('Number of lines: '+count);
+  outputcsv.write('"name","word","count"\n');
+  _.each(genreFrequency, function(value, key){
+      outputcsv.write("\""+key + "\",\""+ key +"\","+value + "\n");
+  });
+  outputcsv.end();
 })
 .on('error', function(error){
   console.log(error.message);
